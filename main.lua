@@ -4,7 +4,32 @@ Camera = require 'libraries/hump/camera'
 local canvas 
 local previous_mx, previous_my = 0, 0
 local zoom = 1
+local element_radius = 20
 
+local graph = {}
+local hovered_skill = nil
+
+graph[1] = {
+    title='+5 HP Regen',
+    links={2,3},
+    position={x=400, y=200}
+}
+
+graph[2] = {
+    title='+10000 Mana Regen',
+    position={x=200, y=200},
+    links={4}
+}
+
+graph[3] = {
+    title='+10000000 HP Regen',
+    position={x=600, y=200}
+}
+
+graph[4] = {
+    title='+2000 HP Regen',
+    position={x=500, y=500}
+}
 
 
 function love.load()
@@ -21,6 +46,15 @@ function love.update(dt)
     camera:move(-dx, -dy)
   end
   previous_mx, previous_my = love.mouse.getPosition()
+  for i=1, #graph do
+    -- if (x2 - x1) ^ 2 + (y2 - y1) ^ 2 <= r^2 then point is either inside or on the circle.
+    if math.pow(graph[i].position.x - previous_mx, 2) + math.pow(graph[i].position.y - previous_my, 2) <=  math.pow(element_radius, 2) then
+      hovered_skill = i
+      break;
+    else 
+      hovered_skill = nil
+    end
+  end
 end
 
 function love.wheelmoved(x, y)
@@ -52,11 +86,25 @@ function love.draw()
   -- draw on canvas
     camera:attach()
     love.graphics.circle('line', gw/2, gh/2, 30)
+    for i=1, #graph do
+      love.graphics.circle('fill', graph[i].position.x, graph[i].position.y, element_radius)
+      if graph[i].links then
+        for j=1, #graph[i].links do
+          love.graphics.line(graph[i].position.x, graph[i].position.y, graph[graph[i].links[j]].position.x, graph[graph[i].links[j]].position.y)
+        end
+      end
+    end
+    if hovered_skill then
+      love.graphics.print(graph[hovered_skill].title, graph[hovered_skill].position.x, graph[hovered_skill].position.y)
+    end
     camera:detach()
+  -- reset to original drawing surface
   love.graphics.setCanvas()
   love.graphics.setColor(255, 255, 255, 255)
+  -- drawing on canvas is done with alpha, if we do not set premultiplied alpha, we are multiplying alphas again.
   love.graphics.setBlendMode('alpha', 'premultiplied')
   love.graphics.draw(canvas, 0, 0, 0, sx, sy)
+  -- set it back to default.
   love.graphics.setBlendMode('alpha')
 end
 

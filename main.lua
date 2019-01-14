@@ -28,7 +28,8 @@ graph[3] = {
 
 graph[4] = {
     title='+2000 HP Regen',
-    position={x=500, y=500}
+    position={x=500, y=500},
+    links={1}
 }
 
 
@@ -41,11 +42,12 @@ end
 
 function love.update(dt)
   if love.mouse.isDown(1) then
-    local mx, my = love.mouse.getPosition()
+    local mx, my = camera:mousePosition(0, 0, gw, gh)
     local dx,dy = mx - previous_mx, my - previous_my
     camera:move(-dx, -dy)
   end
-  previous_mx, previous_my = love.mouse.getPosition()
+  -- mouse position with respect to window, we need with respect to game world
+  previous_mx, previous_my = camera:mousePosition(0, 0, gw, gh)
   for i=1, #graph do
     -- if (x2 - x1) ^ 2 + (y2 - y1) ^ 2 <= r^2 then point is either inside or on the circle.
     if math.pow(graph[i].position.x - previous_mx, 2) + math.pow(graph[i].position.y - previous_my, 2) <=  math.pow(element_radius, 2) then
@@ -87,7 +89,7 @@ function love.draw()
     camera:attach()
     love.graphics.circle('line', gw/2, gh/2, 30)
     for i=1, #graph do
-      love.graphics.circle('fill', graph[i].position.x, graph[i].position.y, element_radius)
+      love.graphics.circle('line', graph[i].position.x, graph[i].position.y, element_radius)
       if graph[i].links then
         for j=1, #graph[i].links do
           love.graphics.line(graph[i].position.x, graph[i].position.y, graph[graph[i].links[j]].position.x, graph[graph[i].links[j]].position.y)
@@ -95,7 +97,8 @@ function love.draw()
       end
     end
     if hovered_skill then
-      love.graphics.print(graph[hovered_skill].title, graph[hovered_skill].position.x, graph[hovered_skill].position.y)
+      -- make sure this isn't resized
+      love.graphics.print(graph[hovered_skill].title, previous_mx, previous_my, 0, 1/zoom, 1/zoom)
     end
     camera:detach()
   -- reset to original drawing surface

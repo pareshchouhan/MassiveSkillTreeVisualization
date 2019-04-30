@@ -5,4 +5,11 @@ Massive skill trees can be added to game to provide power ups, passive skills, i
 
 This is not a plug and play implementation, It will need to be heavily modified by the end user.
 
+# Setup
+```
+git clone --recursive https://github.com/pareshchouhan/MassiveSkillTreeVisualization.git
+cd MassiveSkillTreeVisualization
+love .
+```
+
 Made with [LÖVE](https://love2d.org/)

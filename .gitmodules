@@ -1,0 +1,4 @@
+[submodule "libraries/hump"]
+	path = libraries/hump
+	url = https://github.com/vrld/hump.git
+	branch = master

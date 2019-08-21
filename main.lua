@@ -117,7 +117,7 @@ function love.draw()
     end
     if hovered_skill then
       -- make sure this isn't resized
-      love.graphics.print(graph[hovered_skill].title, previous_mx, previous_my, 0, 1/zoom, 1/zoom)
+      love.graphics.print(graph[hovered_skill].title, previous_mx + 25, previous_my - 25, 0, 1/zoom, 1/zoom)
     end
     camera:detach()
   -- reset to original drawing surface

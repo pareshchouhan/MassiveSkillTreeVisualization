@@ -8,6 +8,7 @@ local element_radius = 20
 
 local graph = {}
 local hovered_skill = nil
+local clicked_skill = {}
 
 graph[1] = {
     title='+5 HP Regen',
@@ -59,6 +60,19 @@ function love.update(dt)
   end
 end
 
+function love.mousepressed(x, y, button, istouch, presses )
+	local mx, my = camera:mousePosition(0, 0, gw, gh)
+
+	for i=1, #graph do
+		    -- if (x2 - x1) ^ 2 + (y2 - y1) ^ 2 <= r^2 then point is either inside or on the circle.
+    if math.pow(graph[i].position.x - mx, 2) + math.pow(graph[i].position.y - my, 2) <=  math.pow(element_radius, 2) then
+      clicked_skill[i] =  not clicked_skill[i]
+      break;
+    end
+    end
+
+end
+
 function love.wheelmoved(x, y)
   -- wheel moved up -> zoom in
   if y > 0 then
@@ -89,7 +103,12 @@ function love.draw()
     camera:attach()
     love.graphics.circle('line', gw/2, gh/2, 30)
     for i=1, #graph do
-      love.graphics.circle('line', graph[i].position.x, graph[i].position.y, element_radius)
+	    local fillStyle = 'line'
+	if clicked_skill[i] then
+		fillStyle = 'fill'
+	end
+
+      love.graphics.circle(fillStyle, graph[i].position.x, graph[i].position.y, element_radius)
       if graph[i].links then
         for j=1, #graph[i].links do
           love.graphics.line(graph[i].position.x, graph[i].position.y, graph[graph[i].links[j]].position.x, graph[graph[i].links[j]].position.y)

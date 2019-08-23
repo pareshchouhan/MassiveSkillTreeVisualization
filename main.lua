@@ -106,7 +106,11 @@ function love.draw()
 	    local fillStyle = 'line'
 	if clicked_skill[i] then
 		fillStyle = 'fill'
+		love.graphics.setColor(0,255,0)
+	else 
+		love.graphics.setColor(255, 0, 0)
 	end
+	fillStyle = 'fill'
 
       love.graphics.circle(fillStyle, graph[i].position.x, graph[i].position.y, element_radius)
       if graph[i].links then
